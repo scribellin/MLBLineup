@@ -32,4 +32,5 @@ jobs:
           git config user.email "bot@morning-lineup"
           git add docs/mlbscores/index.html
           git diff --cached --quiet || git commit -m "Daily update $(date -u +'%Y-%m-%d')"
+          git pull --rebase origin main
           git push
