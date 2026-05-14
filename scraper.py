@@ -3,7 +3,7 @@ import requests, os
 from datetime import datetime, timedelta, timezone
 
 BASE   = "https://statsapi.mlb.com/api/v1"
-OUTDIR = "docs"
+OUTDIR = "docs/mlbscores"
 
 def game_date():
     et = timezone(timedelta(hours=-4))
