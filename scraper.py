@@ -88,13 +88,17 @@ def extract_pitchers(team_data):
         "k":ts.get("strikeOuts",0),"hr":ts.get("homeRuns",0),"era":""})
     return rows
 
-def extract_decisions(box):
+def extract_decisions(game_pk):
     win = loss = save = ""
-    for item in box.get("info",[]):
-        label = item.get("label",""); val = item.get("value","")
-        if label == "WP": win = val
-        elif label == "LP": loss = val
-        elif label == "Sv": save = val
+    try:
+        r = requests.get(f"https://statsapi.mlb.com/api/v1.1/game/{game_pk}/feed/live", timeout=10)
+        r.raise_for_status()
+        dec = r.json().get("liveData", {}).get("decisions", {}) or {}
+        win = (dec.get("winner") or {}).get("fullName", "")
+        loss = (dec.get("loser") or {}).get("fullName", "")
+        save = (dec.get("save") or {}).get("fullName", "")
+    except Exception:
+        pass
     return win, loss, save
 
 def build_game(game_meta, box, ls):
@@ -121,7 +125,7 @@ def build_game(game_meta, box, ls):
     sched = ls.get("scheduledInnings", 9)
     if num_inn != sched: note = f"Final/{num_inn}"
     info_map = {item.get("label",""): item.get("value","") for item in box.get("info",[])}
-    win, loss, save = extract_decisions(box)
+    win, loss, save = extract_decisions(game_meta.get("gamePk"))
     return {
         "away": away_name, "awayAbr": away_abr, "awayRec": away_rec_s, "awayScore": away_score,
         "home": home_name, "homeAbr": home_abr, "homeRec": home_rec_s, "homeScore": home_score,
