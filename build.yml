@@ -1,0 +1,35 @@
+name: Build Morning Lineup
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python scraper.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "Morning Lineup Bot"
+          git config user.email "bot@morning-lineup"
+          git add docs/index.html
+          git diff --cached --quiet || git commit -m "Daily update $(date -u +'%Y-%m-%d')"
+          git push
