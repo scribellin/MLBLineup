@@ -146,7 +146,7 @@ def extract_standings(standings_data):
     ]
     divs = {}
     for record in standings_data.get("records",[]):
-        div_name = record["division"]["name"]
+        div_name = (record.get("division", {}).get("name") or (record.get("teamRecords", [{}])[0].get("team", {}).get("division", {}) or {}).get("name") or "")
         teams = []
         for tr in record["teamRecords"]:
             lr = tr["leagueRecord"]
@@ -168,7 +168,7 @@ body{background:#f5f0e8;font-family:"Georgia","Times New Roman",serif;color:#1a1
 .masthead{background:#1a1a1a;color:#f5f0e8;text-align:center;padding:18px 20px 14px;border-bottom:4px solid #c8a84b}
 .masthead h1{font-size:2.4em;letter-spacing:0.12em;font-weight:900;text-transform:uppercase}
 .masthead .tagline{font-size:0.82em;letter-spacing:0.25em;text-transform:uppercase;color:#c8a84b;margin-top:4px}
-.masthead .dateline{font-size:0.75em;color:#aaa;margin-top:6px;letter-spacing:0.08em}
+.masthead .dateline{font-size:0.75em;color:#aaa;margin-top:6px;letter-spacing:0.08em}.masthead .nav-btn{display:inline-block;background:#c8a84b;color:#1a1a1a;padding:2px 10px;margin:0 6px;border-radius:2px;text-decoration:none;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-size:0.95em}.masthead .nav-btn:hover{background:#f5f0e8}.masthead .nav-btn{display:inline-block;background:#c8a84b;color:#1a1a1a;padding:2px 10px;margin:0 6px;border-radius:2px;text-decoration:none;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-size:0.95em}
 .section-divider{background:#1a1a1a;color:#c8a84b;text-align:center;font-size:0.68em;letter-spacing:0.35em;text-transform:uppercase;padding:5px 0}
 .main-content{max-width:1400px;margin:0 auto;padding:20px 16px}
 .page-header{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;border-bottom:2px solid #1a1a1a;padding-bottom:8px}
@@ -310,12 +310,12 @@ def build_html(date_str, games_html, standings_html, num_games):
 <title>The Morning Lineup — {pretty_date}</title><style>{CSS}</style></head><body>
 <div class="masthead"><h1>&#9749; The Morning Lineup</h1>
 <div class="tagline">MLB Box Scores &amp; Standings</div>
-<div class="dateline">{pretty_date} &mdash; No takes. No discourse. Just baseball.</div></div>
+<div class="dateline">{pretty_date} &mdash; <a href="#standings" class="nav-btn">View Standings &darr;</a> &mdash; No takes. No discourse. Just baseball.</div></div>
 <div class="section-divider">&#9679;&nbsp; Scores from Last Night &nbsp;&#9679;</div>
 <div class="main-content">{no_games}
 <div class="page-header"><h2>Box Scores</h2><span class="subtitle">{pretty_date} &mdash; {num_games} Game{"s" if num_games!=1 else ""}</span></div>
 <div class="games-grid">{games_html}</div>
-<div class="standings-section"><div class="page-header"><h2>Standings</h2><span class="subtitle">Through {pretty_date}</span></div>
+<div class="standings-section" id="standings"><div class="page-header"><h2>Standings</h2><span class="subtitle">Through {pretty_date}</span></div>
 <div class="standings-grid">{standings_html}</div></div></div>
 <div class="footer">Data via MLB Stats API &bull; The Morning Lineup &bull; {pretty_date} &bull; Updated daily at 6am ET</div>
 </body></html>"""
