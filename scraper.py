@@ -307,7 +307,7 @@ def build_html(date_str, games_html, standings_html, num_games):
     no_games = '<p style="text-align:center;padding:60px;color:#666">No completed games found.</p>' if num_games == 0 else ""
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Morning Lineup — {pretty_date}</title><style>{CSS}</style></head><body>
+<title>Last Night's MLB Scores</title><meta property="og:title" content="Last Night's MLB Scores"><meta property="og:description" content="MLB Box Scores & Standings"><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Last Night's MLB Scores"><meta name="twitter:description" content="MLB Box Scores & Standings"><title>The Morning Lineup — {pretty_date}</title><style>{CSS}</style></head><body>
 <div class="masthead"><h1>&#9749; The Morning Lineup</h1>
 <div class="tagline">MLB Box Scores &amp; Standings</div>
 <div class="dateline">{pretty_date} &mdash; <a href="#standings" class="nav-btn">View Standings &darr;</a> &mdash; No takes. No discourse. Just baseball.</div></div>
